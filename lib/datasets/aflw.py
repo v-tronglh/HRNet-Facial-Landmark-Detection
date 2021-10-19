@@ -7,13 +7,14 @@
 import os
 import random
 
+import numpy as np
+import pandas as pd
 import torch
 import torch.utils.data as data
-import pandas as pd
 from PIL import Image, ImageFile
-import numpy as np
 
-from ..utils.transforms import fliplr_joints, crop, generate_target, transform_pixel
+from ..utils.transforms import (crop, fliplr_joints, generate_target,
+                                transform_pixel)
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 

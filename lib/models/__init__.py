@@ -5,10 +5,8 @@
 # Written by Tianheng Cheng (tianhengcheng@gmail.com)
 # ------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
-from .hrnet import get_face_alignment_net, HighResolutionNet
+from .hrnet import HighResolutionNet, get_face_alignment_net
 
 __all__ = ['HighResolutionNet', 'get_face_alignment_net']

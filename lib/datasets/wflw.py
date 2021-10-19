@@ -7,13 +7,14 @@
 import os
 import random
 
+import numpy as np
+import pandas as pd
 import torch
 import torch.utils.data as data
-import pandas as pd
 from PIL import Image
-import numpy as np
 
-from ..utils.transforms import fliplr_joints, crop, generate_target, transform_pixel
+from ..utils.transforms import (crop, fliplr_joints, generate_target,
+                                transform_pixel)
 
 
 class WFLW(data.Dataset):
@@ -79,12 +80,12 @@ class WFLW(data.Dataset):
 
         for i in range(nparts):
             if tpts[i, 1] > 0:
-                tpts[i, 0:2] = transform_pixel(tpts[i, 0:2]+1, center,
+                tpts[i, 0:2] = transform_pixel(tpts[i, 0:2] + 1, center,
                                                scale, self.output_size, rot=r)
-                target[i] = generate_target(target[i], tpts[i]-1, self.sigma,
+                target[i] = generate_target(target[i], tpts[i] - 1, self.sigma,
                                             label_type=self.label_type)
         img = img.astype(np.float32)
-        img = (img/255.0 - self.mean) / self.std
+        img = (img / 255.0 - self.mean) / self.std
         img = img.transpose([2, 0, 1])
         target = torch.Tensor(target)
         tpts = torch.Tensor(tpts)

@@ -4,21 +4,22 @@
 # Created by Tianheng Cheng(tianhengcheng@gmail.com)
 # ------------------------------------------------------------------------------
 
+import argparse
 import os
 import pprint
-import argparse
+import sys
 
 import torch
-import torch.nn as nn
 import torch.backends.cudnn as cudnn
+import torch.nn as nn
 from torch.utils.data import DataLoader
-import sys
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import lib.models as models
 from lib.config import config, update_config
-from lib.utils import utils
-from lib.datasets import get_dataset
 from lib.core import function
+from lib.datasets import get_dataset
+from lib.utils import utils
 
 
 def parse_args():

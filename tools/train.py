@@ -4,22 +4,23 @@
 # Created by Tianheng Cheng(tianhengcheng@gmail.com)
 # ------------------------------------------------------------------------------
 
+import argparse
 import os
 import pprint
-import argparse
+import sys
 
 import torch
+import torch.backends.cudnn as cudnn
 import torch.nn as nn
 import torch.optim as optim
-import torch.backends.cudnn as cudnn
 from tensorboardX import SummaryWriter
 from torch.utils.data import DataLoader
-import sys
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import lib.models as models
 from lib.config import config, update_config
-from lib.datasets import get_dataset
 from lib.core import function
+from lib.datasets import get_dataset
 from lib.utils import utils
 
 
@@ -84,19 +85,19 @@ def main():
     if isinstance(config.TRAIN.LR_STEP, list):
         lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
             optimizer, config.TRAIN.LR_STEP,
-            config.TRAIN.LR_FACTOR, last_epoch-1
+            config.TRAIN.LR_FACTOR, last_epoch - 1
         )
     else:
         lr_scheduler = torch.optim.lr_scheduler.StepLR(
             optimizer, config.TRAIN.LR_STEP,
-            config.TRAIN.LR_FACTOR, last_epoch-1
+            config.TRAIN.LR_FACTOR, last_epoch - 1
         )
     dataset_type = get_dataset(config)
 
     train_loader = DataLoader(
         dataset=dataset_type(config,
                              is_train=True),
-        batch_size=config.TRAIN.BATCH_SIZE_PER_GPU*len(gpus),
+        batch_size=config.TRAIN.BATCH_SIZE_PER_GPU * len(gpus),
         shuffle=config.TRAIN.SHUFFLE,
         num_workers=config.WORKERS,
         pin_memory=config.PIN_MEMORY)
@@ -104,7 +105,7 @@ def main():
     val_loader = DataLoader(
         dataset=dataset_type(config,
                              is_train=False),
-        batch_size=config.TEST.BATCH_SIZE_PER_GPU*len(gpus),
+        batch_size=config.TEST.BATCH_SIZE_PER_GPU * len(gpus),
         shuffle=False,
         num_workers=config.WORKERS,
         pin_memory=config.PIN_MEMORY
@@ -142,13 +143,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-
-

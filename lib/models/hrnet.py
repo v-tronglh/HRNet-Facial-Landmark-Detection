@@ -5,17 +5,14 @@
 # Modified by Tianheng Cheng(tianhengcheng@gmail.com), Yang Zhao
 # ------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
-import os
 import logging
+import os
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 
 BatchNorm2d = nn.BatchNorm2d
 BN_MOMENTUM = 0.01

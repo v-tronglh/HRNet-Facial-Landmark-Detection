@@ -7,12 +7,13 @@
 import math
 import random
 
+import numpy as np
 import torch
 import torch.utils.data as data
-import numpy as np
-
 from hdf5storage import loadmat
-from ..utils.transforms import fliplr_joints, crop, generate_target, transform_pixel
+
+from ..utils.transforms import (crop, fliplr_joints, generate_target,
+                                transform_pixel)
 
 
 class COFW(data.Dataset):

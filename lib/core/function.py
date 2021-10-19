@@ -4,17 +4,15 @@
 # Created by Tianheng Cheng(tianhengcheng@gmail.com)
 # ------------------------------------------------------------------------------
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
-import time
 import logging
+import time
 
-import torch
 import numpy as np
+import torch
 
-from .evaluation import decode_preds, compute_nme
+from .evaluation import compute_nme, decode_preds
 
 logger = logging.getLogger(__name__)
 
