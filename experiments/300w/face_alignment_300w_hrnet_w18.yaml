@@ -14,7 +14,8 @@ MODEL:
   NAME: 'hrnet'
   NUM_JOINTS: 68
   INIT_WEIGHTS: true
-  PRETRAINED: 'hrnetv2_pretrained/hrnetv2_w18_imagenet_pretrained.pth'
+  BACKBONE_FIXED: true
+  PRETRAINED: 'checkpoints/HR18-WFLW-68points.pth'
   SIGMA: 1.0 
   IMAGE_SIZE:
     - 256

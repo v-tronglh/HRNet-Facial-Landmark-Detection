@@ -254,6 +254,7 @@ class HighResolutionNet(nn.Module):
     def __init__(self, config, **kwargs):
         self.inplanes = 64
         extra = config.MODEL.EXTRA
+        backbone_fixed = config.MODEL.BACKBONE_FIXED
         super(HighResolutionNet, self).__init__()
 
         # stem net
@@ -315,6 +316,21 @@ class HighResolutionNet(nn.Module):
                 stride=1,
                 padding=1 if extra.FINAL_CONV_KERNEL == 3 else 0)
         )
+
+        if backbone_fixed:
+            self.conv1.requires_grad_(False)
+            self.bn1.requires_grad_(False)
+            self.conv2.requires_grad_(False)
+            self.bn2.requires_grad_(False)
+            self.relu.requires_grad_(False)
+            self.sf.requires_grad_(False)
+            self.layer1.requires_grad_(False)
+            self.transition1.requires_grad_(False)
+            self.stage2.requires_grad_(False)
+            self.transition2.requires_grad_(False)
+            self.stage3.requires_grad_(False)
+            self.transition3.requires_grad_(False)
+            self.stage4.requires_grad_(False)
 
     def _make_transition_layer(
             self, num_channels_pre_layer, num_channels_cur_layer):

@@ -7,7 +7,7 @@
 import cv2
 import numpy as np
 import scipy
-import scipy.misc
+import scipy.ndimage
 import torch
 
 MATCHED_PARTS = {
@@ -16,12 +16,12 @@ MATCHED_PARTS = {
              [32, 36], [33, 35],
              [37, 46], [38, 45], [39, 44], [40, 43], [41, 48], [42, 47],
              [49, 55], [50, 54], [51, 53], [62, 64], [61, 65], [68, 66], [59, 57], [60, 56]),
-    "AFLW": ([1, 6],  [2, 5], [3, 4],
+    "AFLW": ([1, 6], [2, 5], [3, 4],
              [7, 12], [8, 11], [9, 10],
              [13, 15],
              [16, 18]),
     "COFW": ([1, 2], [5, 7], [3, 4], [6, 8], [9, 10], [11, 12], [13, 15], [17, 18], [14, 16], [19, 20], [23, 24]),
-    "WFLW": ([0, 32],  [1,  31], [2,  30], [3,  29], [4,  28], [5, 27], [6, 26], [7, 25], [8, 24], [9, 23], [10, 22],
+    "WFLW": ([0, 32], [1, 31], [2, 30], [3, 29], [4, 28], [5, 27], [6, 26], [7, 25], [8, 24], [9, 23], [10, 22],
              [11, 21], [12, 20], [13, 19], [14, 18], [15, 17],  # check
              [33, 46], [34, 45], [35, 44], [36, 43], [37, 42], [38, 50], [39, 49], [40, 48], [41, 47],  # elbrow
              [60, 72], [61, 71], [62, 70], [63, 69], [64, 68], [65, 75], [66, 74], [67, 73],
@@ -133,8 +133,8 @@ def get_transform(center, scale, output_size, rot=0):
         rot_mat[2, 2] = 1
         # Need to rotate around center
         t_mat = np.eye(3)
-        t_mat[0, 2] = -output_size[1]/2
-        t_mat[1, 2] = -output_size[0]/2
+        t_mat[0, 2] = -output_size[1] / 2
+        t_mat[1, 2] = -output_size[0] / 2
         t_inv = t_mat.copy()
         t_inv[:2, 2] *= -1
         t = np.dot(t_inv, np.dot(rot_mat, np.dot(t_mat, t)))
@@ -172,9 +172,9 @@ def crop(img, center, scale, output_size, rot=0):
         new_wd = int(np.math.floor(wd / sf))
         if new_size < 2:
             return torch.zeros(output_size[0], output_size[1], img.shape[2]) \
-                        if len(img.shape) > 2 else torch.zeros(output_size[0], output_size[1])
+                if len(img.shape) > 2 else torch.zeros(output_size[0], output_size[1])
         else:
-            img = scipy.misc.imresize(img, [new_ht, new_wd])  # (0-1)-->(0-255)
+            img = cv2.resize(img, [new_ht, new_wd])  # (0-1)-->(0-255)
             center_new[0] = center_new[0] * 1.0 / sf
             center_new[1] = center_new[1] * 1.0 / sf
             scale = scale / sf
@@ -206,9 +206,9 @@ def crop(img, center, scale, output_size, rot=0):
 
     if not rot == 0:
         # Remove padding
-        new_img = scipy.misc.imrotate(new_img, rot)
+        new_img = scipy.ndimage.rotate(new_img, rot, reshape=False)
         new_img = new_img[pad:-pad, pad:-pad]
-    new_img = scipy.misc.imresize(new_img, output_size)
+    new_img = cv2.resize(new_img, output_size)
     return new_img
 
 
@@ -217,8 +217,7 @@ def generate_target(img, pt, sigma, label_type='Gaussian'):
     tmp_size = sigma * 3
     ul = [int(pt[0] - tmp_size), int(pt[1] - tmp_size)]
     br = [int(pt[0] + tmp_size + 1), int(pt[1] + tmp_size + 1)]
-    if (ul[0] >= img.shape[1] or ul[1] >= img.shape[0] or
-            br[0] < 0 or br[1] < 0):
+    if (ul[0] >= img.shape[1] or ul[1] >= img.shape[0] or br[0] < 0 or br[1] < 0):
         # If not, just return the image as is
         return img
 
@@ -242,7 +241,3 @@ def generate_target(img, pt, sigma, label_type='Gaussian'):
 
     img[img_y[0]:img_y[1], img_x[0]:img_x[1]] = g[g_y[0]:g_y[1], g_x[0]:g_x[1]]
     return img
-
-
-
-

@@ -70,7 +70,7 @@ def main():
     test_loader = DataLoader(
         dataset=dataset_type(config,
                              is_train=False),
-        batch_size=config.TEST.BATCH_SIZE_PER_GPU*len(gpus),
+        batch_size=config.TEST.BATCH_SIZE_PER_GPU * len(gpus),
         shuffle=False,
         num_workers=config.WORKERS,
         pin_memory=config.PIN_MEMORY
@@ -83,4 +83,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

@@ -24,4 +24,3 @@ def get_dataset(config):
         return WFLW
     else:
         raise NotImplemented()
-

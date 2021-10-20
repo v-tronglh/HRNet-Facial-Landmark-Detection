@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
+
     def __init__(self):
         self.val = 0
         self.avg = 0
@@ -54,7 +55,7 @@ def train(config, train_loader, model, critertion, optimizer,
 
     for i, (inp, target, meta) in enumerate(train_loader):
         # measure data time
-        data_time.update(time.time()-end)
+        data_time.update(time.time() - end)
 
         # compute the output
         output = model(inp)
@@ -77,7 +78,7 @@ def train(config, train_loader, model, critertion, optimizer,
 
         losses.update(loss.item(), inp.size(0))
 
-        batch_time.update(time.time()-end)
+        batch_time.update(time.time() - end)
         if i % config.PRINT_FREQ == 0:
             msg = 'Epoch: [{0}][{1}/{2}]\t' \
                   'Time {batch_time.val:.3f}s ({batch_time.avg:.3f}s)\t' \
@@ -85,7 +86,7 @@ def train(config, train_loader, model, critertion, optimizer,
                   'Data {data_time.val:.3f}s ({data_time.avg:.3f}s)\t' \
                   'Loss {loss.val:.5f} ({loss.avg:.5f})\t'.format(
                       epoch, i, len(train_loader), batch_time=batch_time,
-                      speed=inp.size(0)/batch_time.val,
+                      speed=inp.size(0) / batch_time.val,
                       data_time=data_time, loss=losses)
             logger.info(msg)
 
@@ -218,6 +219,3 @@ def inference(config, data_loader, model):
     logger.info(msg)
 
     return nme, predictions
-
-
-

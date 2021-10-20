@@ -22,6 +22,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 class AFLW(data.Dataset):
     """AFLW
     """
+
     def __init__(self, cfg, is_train=True, transform=None):
         # specify annotation file for dataset
         if is_train:
@@ -83,12 +84,12 @@ class AFLW(data.Dataset):
 
         for i in range(nparts):
             if tpts[i, 1] > 0:
-                tpts[i, 0:2] = transform_pixel(tpts[i, 0:2]+1, center,
+                tpts[i, 0:2] = transform_pixel(tpts[i, 0:2] + 1, center,
                                                scale, self.output_size, rot=r)
-                target[i] = generate_target(target[i], tpts[i]-1, self.sigma,
+                target[i] = generate_target(target[i], tpts[i] - 1, self.sigma,
                                             label_type=self.label_type)
         img = img.astype(np.float32)
-        img = (img/255.0 - self.mean) / self.std
+        img = (img / 255.0 - self.mean) / self.std
         img = img.transpose([2, 0, 1])
         target = torch.Tensor(target)
         tpts = torch.Tensor(tpts)

@@ -27,8 +27,20 @@ LEFT_EYE = 'mattrai'
 INNER_LIP_BORDER = 'moitrong'
 OUTER_LIP_BORDER = 'moingoai'
 NASAL_BRIDGE = 'songmui'
-NUM_JOINTS = 70
+NUM_JOINTS = 68
 FACE_SIZE = 200.0
+
+face_parts = [
+    CHIN,
+    LEFT_EYEBROW,
+    RIGHT_EYEBROW,
+    NASAL_BRIDGE,
+    NOSTRIL,
+    LEFT_EYE,
+    RIGHT_EYE,
+    OUTER_LIP_BORDER,
+    INNER_LIP_BORDER,
+]
 
 
 def subpath(root: os.PathLike, dirname: os.PathLike) -> str:
@@ -88,20 +100,6 @@ if __name__ == '__main__':
         'val': val_split,
         'test': test_split,
     }
-
-    face_parts = [
-        CHIN,
-        LEFT_EYEBROW,
-        RIGHT_EYEBROW,
-        NASAL_BRIDGE,
-        NOSTRIL,
-        LEFT_EYE,
-        RIGHT_EYE,
-        OUTER_LIP_BORDER,
-        INNER_LIP_BORDER,
-        LEFT_EYE_CENTER,
-        RIGHT_EYE_CENTER,
-    ]
 
     for split_name, split in split_mapping.items():
         print(f'Processing {split_name}...')

@@ -44,7 +44,7 @@ def create_logger(cfg, cfg_name, phase='train'):
     logging.getLogger('').addHandler(console)
 
     tensorboard_log_dir = Path(cfg.LOG_DIR) / dataset / model / \
-                        (cfg_name + '_' + time_str)
+        (cfg_name + '_' + time_str)
     print('=> creating {}'.format(tensorboard_log_dir))
     tensorboard_log_dir.mkdir(parents=True, exist_ok=True)
 
@@ -92,4 +92,3 @@ def save_checkpoint(states, predictions, is_best,
 
     if is_best and 'state_dict' in states.keys():
         torch.save(states['state_dict'].module, os.path.join(output_dir, 'model_best.pth'))
-
