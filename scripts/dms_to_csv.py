@@ -1,7 +1,7 @@
 import argparse
 import csv
+import cv2
 import os
-import shutil
 import sys
 from pathlib import Path
 from typing import List, Optional, cast
@@ -27,6 +27,7 @@ LEFT_EYE = 'mattrai'
 INNER_LIP_BORDER = 'moitrong'
 OUTER_LIP_BORDER = 'moingoai'
 NASAL_BRIDGE = 'songmui'
+SKIP = 'skip'
 NUM_JOINTS = 68
 FACE_SIZE = 200.0
 
@@ -129,10 +130,13 @@ if __name__ == '__main__':
                     im_dir = xml_file.with_name('images')
 
                     for frame in label.frames:
+                        if find_instance_by_label(frame.instances, SKIP):
+                            continue
+
                         im_file = im_dir.joinpath(frame.name)
 
                         # image_name
-                        image_name = subpath(dirname, im_file)
+                        image_name = subpath(xml_file.parent.parent, im_file)
                         image_name = '/'.join(['images', image_name])
 
                         if ',' in image_name or ' ' in image_name:
@@ -142,7 +146,7 @@ if __name__ == '__main__':
                         face = cast(Box, find_instance_by_label(frame.instances, FACE))
 
                         if face:
-                            scale = (face.xbr - face.xtl + 1) / FACE_SIZE
+                            scale = (face.ybr - face.ytl + 1) / FACE_SIZE
                             center_w = (face.xtl + face.xbr) / 2
                             center_h = (face.ytl + face.ybr) / 2
                         else:
@@ -165,10 +169,13 @@ if __name__ == '__main__':
                             else:
                                 raise RuntimeError(f'No {face_part} found in {xml_file}, frame #{frame.id}.')
 
-                        csv_writer.writerow(row)
+                        if len(row) == 4 + NUM_JOINTS * 2:
+                            csv_writer.writerow(row)
 
-                        out_im_file = outdir.joinpath(image_name)
-                        out_im_file.parent.mkdir(parents=True, exist_ok=True)
-                        shutil.copy(im_file, out_im_file)
+                            out_im_file = outdir.joinpath(image_name)
+                            out_im_file.parent.mkdir(parents=True, exist_ok=True)
+
+                            image = cv2.imread(str(im_file))
+                            cv2.imwrite(str(out_im_file), image)
                 except Exception as e:
                     print(e)

@@ -3,18 +3,19 @@ WORKERS: 4
 PRINT_FREQ: 50
 
 DATASET:
-  DATASET: WFLW
-  ROOT: './data/wflw/images/'
-  TRAINSET: './data/wflw/face_landmarks_wflw_train.csv'
-  TESTSET: './data/wflw/face_landmarks_wflw_test.csv'
+  DATASET: 300W
+  ROOT: './data/'
+  TRAINSET: './data/train.csv'
+  TESTSET: './data/val.csv'
   FLIP: true
   SCALE_FACTOR: 0.25
   ROT_FACTOR: 30
 MODEL:
   NAME: 'hrnet'
-  NUM_JOINTS: 98
+  NUM_JOINTS: 68
   INIT_WEIGHTS: true
-  PRETRAINED: 'hrnetv2_pretrained/hrnetv2_w18_imagenet_pretrained.pth'
+  BACKBONE_FIXED: true
+  PRETRAINED: 'checkpoints/HR18-WFLW-68points.pth'
   SIGMA: 1.5
   IMAGE_SIZE:
     - 256
@@ -68,7 +69,7 @@ TRAIN:
   SHUFFLE: true
   BEGIN_EPOCH: 0
   END_EPOCH: 60
-  RESUME: true
+  RESUME: false
   OPTIMIZER: 'adam'
   LR: 0.0001
   WD: 0.0
