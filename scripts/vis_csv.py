@@ -25,17 +25,20 @@ if __name__ == '__main__':
         next(annos)
 
         for row in tqdm(list(annos)):
-            image_name, scale, center_w, center_h, *points = row
-            im_file = datadir.joinpath(image_name)
-            points = [round(float(p)) for p in points]  # type: ignore
-            points = [[points[i], points[i + 1]] for i in range(0, len(points), 2)]  # type: ignore
+            try:
+                image_name, scale, center_w, center_h, *points = row
+                im_file = datadir.joinpath(image_name)
+                points = [round(float(p)) for p in points]  # type: ignore
+                points = [[points[i], points[i + 1]] for i in range(0, len(points), 2)]  # type: ignore
 
-            image = cv2.imread(str(im_file))
-            image = cv2.circle(image, (round(float(center_w)), round(float(center_h))), 2, (0, 255, 0), thickness=2)
+                image = cv2.imread(str(im_file))
+                image = cv2.circle(image, (round(float(center_w)), round(float(center_h))), 2, (0, 255, 0), thickness=2)
 
-            for i, point in enumerate(points):
-                image = cv2.circle(image, point, 2, (0, 255, 0), thickness=2)
-                image = cv2.putText(image, str(i), point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 0, 255), thickness=1)
+                for i, point in enumerate(points):
+                    image = cv2.circle(image, point, 2, (0, 255, 0), thickness=2)
+                    image = cv2.putText(image, str(i), point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 0, 255), thickness=1)
 
-            out_im_file = outdir.joinpath('_'.join(image_name.split('/')))
-            cv2.imwrite(str(out_im_file), image)
+                out_im_file = outdir.joinpath('_'.join(image_name.split('/')))
+                cv2.imwrite(str(out_im_file), image)
+            except Exception as e:
+                print(im_file, e)

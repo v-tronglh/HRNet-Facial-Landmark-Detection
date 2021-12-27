@@ -109,6 +109,8 @@ data
 .idea
 .DS_Store
 hrnetv2_pretrained/
-output
+out*
 log
 *.swp
+*.pt*
+notebooks

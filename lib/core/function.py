@@ -169,7 +169,7 @@ def validate(config, val_loader, model, criterion, epoch, writer_dict):
     return nme, predictions
 
 
-def inference(config, data_loader, model):
+def inference(config, data_loader, model, predict):
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
@@ -192,16 +192,18 @@ def inference(config, data_loader, model):
             score_map = output.data.cpu()
             preds = decode_preds(score_map, meta['center'], meta['scale'], [64, 64])
 
-            # NME
-            nme_temp = compute_nme(preds, meta)
+            if not predict:
+                # NME
+                nme_temp = compute_nme(preds, meta)
 
-            failure_008 = (nme_temp > 0.08).sum()
-            failure_010 = (nme_temp > 0.10).sum()
-            count_failure_008 += failure_008
-            count_failure_010 += failure_010
+                failure_008 = (nme_temp > 0.08).sum()
+                failure_010 = (nme_temp > 0.10).sum()
+                count_failure_008 += failure_008
+                count_failure_010 += failure_010
 
-            nme_batch_sum += np.sum(nme_temp)
-            nme_count = nme_count + preds.size(0)
+                nme_batch_sum += np.sum(nme_temp)
+                nme_count = nme_count + preds.size(0)
+
             for n in range(score_map.size(0)):
                 predictions[meta['index'][n], :, :] = preds[n, :, :]
 
@@ -209,13 +211,17 @@ def inference(config, data_loader, model):
             batch_time.update(time.time() - end)
             end = time.time()
 
-    nme = nme_batch_sum / nme_count
-    failure_008_rate = count_failure_008 / nme_count
-    failure_010_rate = count_failure_010 / nme_count
+    if not predict:
+        nme = nme_batch_sum / nme_count
+        failure_008_rate = count_failure_008 / nme_count
+        failure_010_rate = count_failure_010 / nme_count
+    else:
+        nme = None
 
-    msg = 'Test Results time:{:.4f} loss:{:.4f} nme:{:.4f} [008]:{:.4f} ' \
-          '[010]:{:.4f}'.format(batch_time.avg, losses.avg, nme,
-                                failure_008_rate, failure_010_rate)
-    logger.info(msg)
+    if not predict:
+        msg = 'Test Results time:{:.4f} loss:{:.4f} nme:{:.4f} [008]:{:.4f} ' \
+              '[010]:{:.4f}'.format(batch_time.avg, losses.avg, nme,
+                                    failure_008_rate, failure_010_rate)
+        logger.info(msg)
 
     return nme, predictions
